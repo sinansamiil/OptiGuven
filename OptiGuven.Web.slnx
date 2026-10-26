@@ -1,0 +1,9 @@
+<Solution>
+  <Configurations>
+    <Platform Name="Any CPU" />
+    <Platform Name="x64" />
+  </Configurations>
+  <Project Path="OptiGuven.Web/OptiGuven.Web.csproj" Id="2812df7c-59a2-42c4-8a80-6565ca3eddb3">
+    <Platform Solution="*|x64" Project="x64" />
+  </Project>
+</Solution>

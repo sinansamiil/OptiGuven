@@ -1,0 +1,559 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="AkilliFabrikaDBModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="ArizaBiletleri">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="MakineId" Type="int" />
+          <Property Name="BildirenKullaniciId" Type="int" />
+          <Property Name="KullaniciAciklamasi" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="NlpKategori" Type="nvarchar" MaxLength="50" />
+          <Property Name="NlpOncelik" Type="nvarchar" MaxLength="20" />
+          <Property Name="Durum" Type="nvarchar" MaxLength="20" />
+          <Property Name="CozumAciklamasi" Type="nvarchar(max)" />
+          <Property Name="OlusturulmaTarihi" Type="datetime" />
+          <Property Name="KapanisTarihi" Type="datetime" />
+          <Property Name="GorselYolu" Type="nvarchar(max)" />
+        </EntityType>
+        <EntityType Name="ArizaGorselleri">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ArizaId" Type="int" />
+          <Property Name="GorselYolu" Type="nvarchar(max)" />
+          <Property Name="KayitTarihi" Type="datetime" />
+        </EntityType>
+        <EntityType Name="Departmanlar">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="DepartmanAdi" Type="nvarchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="IsgIhlalleri">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="KameraId" Type="int" />
+          <Property Name="IhlalTipi" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="GuvenSkoru" Type="decimal" Precision="5" Scale="2" />
+          <Property Name="FotografYolu" Type="nvarchar(max)" />
+          <Property Name="Tarih" Type="datetime" />
+          <Property Name="Durum" Type="nvarchar" MaxLength="20" />
+        </EntityType>
+        <EntityType Name="KameraNoktalari">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="LokasyonAdi" Type="nvarchar" MaxLength="100" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Kullanicilar">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="DepartmanId" Type="int" />
+          <Property Name="AdSoyad" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="Email" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="SifreHash" Type="nvarchar" MaxLength="250" Nullable="false" />
+          <Property Name="Rol" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="AktifMi" Type="bit" />
+        </EntityType>
+        <EntityType Name="Makineler">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="MakineKodu" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Ad" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="DepartmanId" Type="int" />
+          <Property Name="Durum" Type="nvarchar" MaxLength="20" />
+        </EntityType>
+        <EntityType Name="SensorLoglari">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="MakineId" Type="int" />
+          <Property Name="Sicaklik" Type="decimal" Precision="5" Scale="2" />
+          <Property Name="Titresim" Type="decimal" Precision="5" Scale="2" />
+          <Property Name="YapayZekaAnomaliSkoru" Type="decimal" Precision="5" Scale="2" />
+          <Property Name="OlusturulmaTarihi" Type="datetime" />
+        </EntityType>
+        <Association Name="FK__ArizaBile__Bildi__59FA5E80">
+          <End Role="Kullanicilar" Type="Self.Kullanicilar" Multiplicity="0..1" />
+          <End Role="ArizaBiletleri" Type="Self.ArizaBiletleri" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Kullanicilar">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ArizaBiletleri">
+              <PropertyRef Name="BildirenKullaniciId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__ArizaBile__Makin__59063A47">
+          <End Role="Makineler" Type="Self.Makineler" Multiplicity="0..1" />
+          <End Role="ArizaBiletleri" Type="Self.ArizaBiletleri" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Makineler">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ArizaBiletleri">
+              <PropertyRef Name="MakineId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__ArizaGors__Ariza__66603565">
+          <End Role="ArizaBiletleri" Type="Self.ArizaBiletleri" Multiplicity="0..1" />
+          <End Role="ArizaGorselleri" Type="Self.ArizaGorselleri" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ArizaBiletleri">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ArizaGorselleri">
+              <PropertyRef Name="ArizaId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__IsgIhlall__Kamer__60A75C0F">
+          <End Role="KameraNoktalari" Type="Self.KameraNoktalari" Multiplicity="0..1" />
+          <End Role="IsgIhlalleri" Type="Self.IsgIhlalleri" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="KameraNoktalari">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="IsgIhlalleri">
+              <PropertyRef Name="KameraId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Kullanici__Depar__4D94879B">
+          <End Role="Departmanlar" Type="Self.Departmanlar" Multiplicity="0..1" />
+          <End Role="Kullanicilar" Type="Self.Kullanicilar" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Departmanlar">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Kullanicilar">
+              <PropertyRef Name="DepartmanId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Makineler__Depar__5165187F">
+          <End Role="Departmanlar" Type="Self.Departmanlar" Multiplicity="0..1" />
+          <End Role="Makineler" Type="Self.Makineler" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Departmanlar">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Makineler">
+              <PropertyRef Name="DepartmanId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__SensorLog__Makin__5535A963">
+          <End Role="Makineler" Type="Self.Makineler" Multiplicity="0..1" />
+          <End Role="SensorLoglari" Type="Self.SensorLoglari" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Makineler">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="SensorLoglari">
+              <PropertyRef Name="MakineId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="AkilliFabrikaDBModelStoreContainer">
+          <EntitySet Name="ArizaBiletleri" EntityType="Self.ArizaBiletleri" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ArizaGorselleri" EntityType="Self.ArizaGorselleri" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Departmanlar" EntityType="Self.Departmanlar" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="IsgIhlalleri" EntityType="Self.IsgIhlalleri" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="KameraNoktalari" EntityType="Self.KameraNoktalari" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Kullanicilar" EntityType="Self.Kullanicilar" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Makineler" EntityType="Self.Makineler" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="SensorLoglari" EntityType="Self.SensorLoglari" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK__ArizaBile__Bildi__59FA5E80" Association="Self.FK__ArizaBile__Bildi__59FA5E80">
+            <End Role="Kullanicilar" EntitySet="Kullanicilar" />
+            <End Role="ArizaBiletleri" EntitySet="ArizaBiletleri" />
+          </AssociationSet>
+          <AssociationSet Name="FK__ArizaBile__Makin__59063A47" Association="Self.FK__ArizaBile__Makin__59063A47">
+            <End Role="Makineler" EntitySet="Makineler" />
+            <End Role="ArizaBiletleri" EntitySet="ArizaBiletleri" />
+          </AssociationSet>
+          <AssociationSet Name="FK__ArizaGors__Ariza__66603565" Association="Self.FK__ArizaGors__Ariza__66603565">
+            <End Role="ArizaBiletleri" EntitySet="ArizaBiletleri" />
+            <End Role="ArizaGorselleri" EntitySet="ArizaGorselleri" />
+          </AssociationSet>
+          <AssociationSet Name="FK__IsgIhlall__Kamer__60A75C0F" Association="Self.FK__IsgIhlall__Kamer__60A75C0F">
+            <End Role="KameraNoktalari" EntitySet="KameraNoktalari" />
+            <End Role="IsgIhlalleri" EntitySet="IsgIhlalleri" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Kullanici__Depar__4D94879B" Association="Self.FK__Kullanici__Depar__4D94879B">
+            <End Role="Departmanlar" EntitySet="Departmanlar" />
+            <End Role="Kullanicilar" EntitySet="Kullanicilar" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Makineler__Depar__5165187F" Association="Self.FK__Makineler__Depar__5165187F">
+            <End Role="Departmanlar" EntitySet="Departmanlar" />
+            <End Role="Makineler" EntitySet="Makineler" />
+          </AssociationSet>
+          <AssociationSet Name="FK__SensorLog__Makin__5535A963" Association="Self.FK__SensorLog__Makin__5535A963">
+            <End Role="Makineler" EntitySet="Makineler" />
+            <End Role="SensorLoglari" EntitySet="SensorLoglari" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="AkilliFabrikaDBModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="ArizaBiletleri">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="MakineId" Type="Int32" />
+          <Property Name="BildirenKullaniciId" Type="Int32" />
+          <Property Name="KullaniciAciklamasi" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="NlpKategori" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="NlpOncelik" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="Durum" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="CozumAciklamasi" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="OlusturulmaTarihi" Type="DateTime" Precision="3" />
+          <Property Name="KapanisTarihi" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="Kullanicilar" Relationship="Self.FK__ArizaBile__Bildi__59FA5E80" FromRole="ArizaBiletleri" ToRole="Kullanicilar" />
+          <NavigationProperty Name="Makineler" Relationship="Self.FK__ArizaBile__Makin__59063A47" FromRole="ArizaBiletleri" ToRole="Makineler" />
+          <Property Name="GorselYolu" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="ArizaGorselleri" Relationship="AkilliFabrikaDBModel.FK__ArizaGors__Ariza__66603565" FromRole="ArizaBiletleri" ToRole="ArizaGorselleri" />
+        </EntityType>
+        <EntityType Name="Departmanlar">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="DepartmanAdi" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="Kullanicilar" Relationship="Self.FK__Kullanici__Depar__4D94879B" FromRole="Departmanlar" ToRole="Kullanicilar" />
+          <NavigationProperty Name="Makineler" Relationship="Self.FK__Makineler__Depar__5165187F" FromRole="Departmanlar" ToRole="Makineler" />
+        </EntityType>
+        <EntityType Name="IsgIhlalleri">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="KameraId" Type="Int32" />
+          <Property Name="IhlalTipi" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="GuvenSkoru" Type="Decimal" Precision="5" Scale="2" />
+          <Property Name="FotografYolu" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Tarih" Type="DateTime" Precision="3" />
+          <Property Name="Durum" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="KameraNoktalari" Relationship="Self.FK__IsgIhlall__Kamer__60A75C0F" FromRole="IsgIhlalleri" ToRole="KameraNoktalari" />
+        </EntityType>
+        <EntityType Name="KameraNoktalari">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="LokasyonAdi" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="IsgIhlalleri" Relationship="Self.FK__IsgIhlall__Kamer__60A75C0F" FromRole="KameraNoktalari" ToRole="IsgIhlalleri" />
+        </EntityType>
+        <EntityType Name="Kullanicilar">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="DepartmanId" Type="Int32" />
+          <Property Name="AdSoyad" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Email" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="SifreHash" Type="String" MaxLength="250" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Rol" Type="String" MaxLength="20" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="AktifMi" Type="Boolean" />
+          <NavigationProperty Name="ArizaBiletleri" Relationship="Self.FK__ArizaBile__Bildi__59FA5E80" FromRole="Kullanicilar" ToRole="ArizaBiletleri" />
+          <NavigationProperty Name="Departmanlar" Relationship="Self.FK__Kullanici__Depar__4D94879B" FromRole="Kullanicilar" ToRole="Departmanlar" />
+        </EntityType>
+        <EntityType Name="Makineler">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="MakineKodu" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Ad" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="DepartmanId" Type="Int32" />
+          <Property Name="Durum" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="ArizaBiletleri" Relationship="Self.FK__ArizaBile__Makin__59063A47" FromRole="Makineler" ToRole="ArizaBiletleri" />
+          <NavigationProperty Name="Departmanlar" Relationship="Self.FK__Makineler__Depar__5165187F" FromRole="Makineler" ToRole="Departmanlar" />
+          <NavigationProperty Name="SensorLoglari" Relationship="Self.FK__SensorLog__Makin__5535A963" FromRole="Makineler" ToRole="SensorLoglari" />
+        </EntityType>
+        <EntityType Name="SensorLoglari">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="MakineId" Type="Int32" />
+          <Property Name="Sicaklik" Type="Decimal" Precision="5" Scale="2" />
+          <Property Name="Titresim" Type="Decimal" Precision="5" Scale="2" />
+          <Property Name="YapayZekaAnomaliSkoru" Type="Decimal" Precision="5" Scale="2" />
+          <Property Name="OlusturulmaTarihi" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="Makineler" Relationship="Self.FK__SensorLog__Makin__5535A963" FromRole="SensorLoglari" ToRole="Makineler" />
+        </EntityType>
+        <Association Name="FK__ArizaBile__Bildi__59FA5E80">
+          <End Role="Kullanicilar" Type="Self.Kullanicilar" Multiplicity="0..1" />
+          <End Role="ArizaBiletleri" Type="Self.ArizaBiletleri" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Kullanicilar">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ArizaBiletleri">
+              <PropertyRef Name="BildirenKullaniciId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__ArizaBile__Makin__59063A47">
+          <End Role="Makineler" Type="Self.Makineler" Multiplicity="0..1" />
+          <End Role="ArizaBiletleri" Type="Self.ArizaBiletleri" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Makineler">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ArizaBiletleri">
+              <PropertyRef Name="MakineId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Kullanici__Depar__4D94879B">
+          <End Role="Departmanlar" Type="Self.Departmanlar" Multiplicity="0..1" />
+          <End Role="Kullanicilar" Type="Self.Kullanicilar" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Departmanlar">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Kullanicilar">
+              <PropertyRef Name="DepartmanId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Makineler__Depar__5165187F">
+          <End Role="Departmanlar" Type="Self.Departmanlar" Multiplicity="0..1" />
+          <End Role="Makineler" Type="Self.Makineler" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Departmanlar">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Makineler">
+              <PropertyRef Name="DepartmanId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__IsgIhlall__Kamer__60A75C0F">
+          <End Role="KameraNoktalari" Type="Self.KameraNoktalari" Multiplicity="0..1" />
+          <End Role="IsgIhlalleri" Type="Self.IsgIhlalleri" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="KameraNoktalari">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="IsgIhlalleri">
+              <PropertyRef Name="KameraId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__SensorLog__Makin__5535A963">
+          <End Role="Makineler" Type="Self.Makineler" Multiplicity="0..1" />
+          <End Role="SensorLoglari" Type="Self.SensorLoglari" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Makineler">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="SensorLoglari">
+              <PropertyRef Name="MakineId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="AkilliFabrikaDBEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="ArizaBiletleri" EntityType="Self.ArizaBiletleri" />
+          <EntitySet Name="Departmanlar" EntityType="Self.Departmanlar" />
+          <EntitySet Name="IsgIhlalleri" EntityType="Self.IsgIhlalleri" />
+          <EntitySet Name="KameraNoktalari" EntityType="Self.KameraNoktalari" />
+          <EntitySet Name="Kullanicilar" EntityType="Self.Kullanicilar" />
+          <EntitySet Name="Makineler" EntityType="Self.Makineler" />
+          <EntitySet Name="SensorLoglari" EntityType="Self.SensorLoglari" />
+          <AssociationSet Name="FK__ArizaBile__Bildi__59FA5E80" Association="Self.FK__ArizaBile__Bildi__59FA5E80">
+            <End Role="Kullanicilar" EntitySet="Kullanicilar" />
+            <End Role="ArizaBiletleri" EntitySet="ArizaBiletleri" />
+          </AssociationSet>
+          <AssociationSet Name="FK__ArizaBile__Makin__59063A47" Association="Self.FK__ArizaBile__Makin__59063A47">
+            <End Role="Makineler" EntitySet="Makineler" />
+            <End Role="ArizaBiletleri" EntitySet="ArizaBiletleri" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Kullanici__Depar__4D94879B" Association="Self.FK__Kullanici__Depar__4D94879B">
+            <End Role="Departmanlar" EntitySet="Departmanlar" />
+            <End Role="Kullanicilar" EntitySet="Kullanicilar" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Makineler__Depar__5165187F" Association="Self.FK__Makineler__Depar__5165187F">
+            <End Role="Departmanlar" EntitySet="Departmanlar" />
+            <End Role="Makineler" EntitySet="Makineler" />
+          </AssociationSet>
+          <AssociationSet Name="FK__IsgIhlall__Kamer__60A75C0F" Association="Self.FK__IsgIhlall__Kamer__60A75C0F">
+            <End Role="KameraNoktalari" EntitySet="KameraNoktalari" />
+            <End Role="IsgIhlalleri" EntitySet="IsgIhlalleri" />
+          </AssociationSet>
+          <AssociationSet Name="FK__SensorLog__Makin__5535A963" Association="Self.FK__SensorLog__Makin__5535A963">
+            <End Role="Makineler" EntitySet="Makineler" />
+            <End Role="SensorLoglari" EntitySet="SensorLoglari" />
+          </AssociationSet>
+          <EntitySet Name="ArizaGorselleri" EntityType="AkilliFabrikaDBModel.ArizaGorselleri" />
+          <AssociationSet Name="FK__ArizaGors__Ariza__66603565" Association="AkilliFabrikaDBModel.FK__ArizaGors__Ariza__66603565">
+            <End Role="ArizaBiletleri" EntitySet="ArizaBiletleri" />
+            <End Role="ArizaGorselleri" EntitySet="ArizaGorselleri" />
+          </AssociationSet>
+        </EntityContainer>
+        <EntityType Name="ArizaGorselleri">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ArizaId" Type="Int32" />
+          <Property Name="GorselYolu" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="KayitTarihi" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="ArizaBiletleri" Relationship="AkilliFabrikaDBModel.FK__ArizaGors__Ariza__66603565" FromRole="ArizaGorselleri" ToRole="ArizaBiletleri" />
+        </EntityType>
+        <Association Name="FK__ArizaGors__Ariza__66603565">
+          <End Type="AkilliFabrikaDBModel.ArizaBiletleri" Role="ArizaBiletleri" Multiplicity="0..1" />
+          <End Type="AkilliFabrikaDBModel.ArizaGorselleri" Role="ArizaGorselleri" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ArizaBiletleri">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ArizaGorselleri">
+              <PropertyRef Name="ArizaId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="AkilliFabrikaDBModelStoreContainer" CdmEntityContainer="AkilliFabrikaDBEntities">
+          <EntitySetMapping Name="ArizaBiletleri">
+            <EntityTypeMapping TypeName="AkilliFabrikaDBModel.ArizaBiletleri">
+              <MappingFragment StoreEntitySet="ArizaBiletleri">
+                <ScalarProperty Name="GorselYolu" ColumnName="GorselYolu" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="MakineId" ColumnName="MakineId" />
+                <ScalarProperty Name="BildirenKullaniciId" ColumnName="BildirenKullaniciId" />
+                <ScalarProperty Name="KullaniciAciklamasi" ColumnName="KullaniciAciklamasi" />
+                <ScalarProperty Name="NlpKategori" ColumnName="NlpKategori" />
+                <ScalarProperty Name="NlpOncelik" ColumnName="NlpOncelik" />
+                <ScalarProperty Name="Durum" ColumnName="Durum" />
+                <ScalarProperty Name="CozumAciklamasi" ColumnName="CozumAciklamasi" />
+                <ScalarProperty Name="OlusturulmaTarihi" ColumnName="OlusturulmaTarihi" />
+                <ScalarProperty Name="KapanisTarihi" ColumnName="KapanisTarihi" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Departmanlar">
+            <EntityTypeMapping TypeName="AkilliFabrikaDBModel.Departmanlar">
+              <MappingFragment StoreEntitySet="Departmanlar">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="DepartmanAdi" ColumnName="DepartmanAdi" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="IsgIhlalleri">
+            <EntityTypeMapping TypeName="AkilliFabrikaDBModel.IsgIhlalleri">
+              <MappingFragment StoreEntitySet="IsgIhlalleri">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="KameraId" ColumnName="KameraId" />
+                <ScalarProperty Name="IhlalTipi" ColumnName="IhlalTipi" />
+                <ScalarProperty Name="GuvenSkoru" ColumnName="GuvenSkoru" />
+                <ScalarProperty Name="FotografYolu" ColumnName="FotografYolu" />
+                <ScalarProperty Name="Tarih" ColumnName="Tarih" />
+                <ScalarProperty Name="Durum" ColumnName="Durum" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="KameraNoktalari">
+            <EntityTypeMapping TypeName="AkilliFabrikaDBModel.KameraNoktalari">
+              <MappingFragment StoreEntitySet="KameraNoktalari">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="LokasyonAdi" ColumnName="LokasyonAdi" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Kullanicilar">
+            <EntityTypeMapping TypeName="AkilliFabrikaDBModel.Kullanicilar">
+              <MappingFragment StoreEntitySet="Kullanicilar">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="DepartmanId" ColumnName="DepartmanId" />
+                <ScalarProperty Name="AdSoyad" ColumnName="AdSoyad" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="SifreHash" ColumnName="SifreHash" />
+                <ScalarProperty Name="Rol" ColumnName="Rol" />
+                <ScalarProperty Name="AktifMi" ColumnName="AktifMi" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Makineler">
+            <EntityTypeMapping TypeName="AkilliFabrikaDBModel.Makineler">
+              <MappingFragment StoreEntitySet="Makineler">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="MakineKodu" ColumnName="MakineKodu" />
+                <ScalarProperty Name="Ad" ColumnName="Ad" />
+                <ScalarProperty Name="DepartmanId" ColumnName="DepartmanId" />
+                <ScalarProperty Name="Durum" ColumnName="Durum" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SensorLoglari">
+            <EntityTypeMapping TypeName="AkilliFabrikaDBModel.SensorLoglari">
+              <MappingFragment StoreEntitySet="SensorLoglari">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="MakineId" ColumnName="MakineId" />
+                <ScalarProperty Name="Sicaklik" ColumnName="Sicaklik" />
+                <ScalarProperty Name="Titresim" ColumnName="Titresim" />
+                <ScalarProperty Name="YapayZekaAnomaliSkoru" ColumnName="YapayZekaAnomaliSkoru" />
+                <ScalarProperty Name="OlusturulmaTarihi" ColumnName="OlusturulmaTarihi" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ArizaGorselleri">
+            <EntityTypeMapping TypeName="AkilliFabrikaDBModel.ArizaGorselleri">
+              <MappingFragment StoreEntitySet="ArizaGorselleri">
+                <ScalarProperty Name="KayitTarihi" ColumnName="KayitTarihi" />
+                <ScalarProperty Name="GorselYolu" ColumnName="GorselYolu" />
+                <ScalarProperty Name="ArizaId" ColumnName="ArizaId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

@@ -1,0 +1,99 @@
+﻿@model IEnumerable<OptiGuven.Web.Models.IsgIhlalleri>
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>OptiGüven Geçmiş İSG İhlalleri Raporu</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            padding: 20px;
+            color: #333;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #6c757d; /* Arşiv olduğu için gri/kurumsal tonlama */
+            padding-bottom: 10px;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #6c757d;
+        }
+
+        .tarih {
+            font-size: 12px;
+            color: #777;
+            float: right;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+            font-size: 13px;
+        }
+
+        th {
+            background-color: #e9ecef;
+            color: #495057;
+            font-weight: bold;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <span class="tarih">Rapor Çıktı Tarihi: @DateTime.Now.ToString("dd.MM.yyyy HH:mm")</span>
+        <div class="logo">👁️ OPTİGÜVEN AKILLI FABRİKA SİSTEMLERİ</div>
+        <h2>İncelenmiş (Geçmiş) İSG İhlalleri Arşivi</h2>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>İhlal ID</th>
+                <th>Kamera ID</th>
+                <th>İhlal Tipi</th>
+                <th>AI Güven Skoru</th>
+                <th>Tespit/İncelenme Tarihi</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model != null && Model.Any())
+            {
+                foreach (var item in Model)
+                {
+                    <tr>
+                        <td>#@item.Id</td>
+                        <td>Kamera-@item.KameraId</td>
+                        <td>@item.IhlalTipi</td>
+                        <td>%@item.GuvenSkoru</td>
+                        <td>@(item.Tarih.HasValue ? item.Tarih.Value.ToString("dd.MM.yyyy HH:mm") : "-")</td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="5" style="text-align:center;">Geçmiş İSG ihlali kaydı bulunmuyor.</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</body>
+</html>

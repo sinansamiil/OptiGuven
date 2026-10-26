@@ -1,0 +1,61 @@
+﻿@model OptiGuven.Web.Models.Makineler
+
+@{
+    ViewBag.Title = "Yeni Makine Ekle";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+
+        .form-container {
+            max-width: 500px;
+            margin: 50px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container form-container">
+        <h2 class="mb-4">➕ Yeni Makine Ekle</h2>
+        <hr />
+
+        @using (Html.BeginForm("Create", "Makine", FormMethod.Post))
+        {
+            @Html.AntiForgeryToken()
+
+            <div class="mb-3">
+                @Html.LabelFor(m => m.MakineKodu, "Makine Kodu", new { @class = "form-label fw-bold" })
+                @Html.EditorFor(m => m.MakineKodu, new { htmlAttributes = new { @class = "form-control", placeholder = "Örn: CNC-01" } })
+            </div>
+
+            <div class="mb-3">
+                @Html.LabelFor(m => m.Ad, "Makine Adı", new { @class = "form-label fw-bold" })
+                @Html.EditorFor(m => m.Ad, new { htmlAttributes = new { @class = "form-control" } })
+            </div>
+
+            <div class="mb-3">
+                @Html.LabelFor(m => m.Durum, "Mevcut Durum", new { @class = "form-label fw-bold" })
+                @Html.DropDownListFor(m => m.Durum, new SelectList(new[] { "Aktif", "Bakımda", "Pasif" }), new { @class = "form-select" })
+            </div>
+
+            <div class="d-flex justify-content-between mt-4">
+                <a href="@Url.Action("Index")" class="btn btn-secondary">İptal ve Geri Dön</a>
+                <button type="submit" class="btn btn-success">💾 Kaydet</button>
+            </div>
+        }
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,99 @@
+﻿@model IEnumerable<OptiGuven.Web.Models.ArizaBiletleri>
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>OptiGüven Geçmiş Arıza Raporu</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            padding: 20px;
+            color: #333;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #6c757d; /* Arşiv olduğu için gri tonlama */
+            padding-bottom: 10px;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #6c757d;
+        }
+
+        .tarih {
+            font-size: 12px;
+            color: #777;
+            float: right;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+            font-size: 13px;
+        }
+
+        th {
+            background-color: #e9ecef;
+            color: #495057;
+            font-weight: bold;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <span class="tarih">Rapor Çıktı Tarihi: @DateTime.Now.ToString("dd.MM.yyyy HH:mm")</span>
+        <div class="logo">🛡️ OPTİGÜVEN AKILLI FABRİKA SİSTEMLERİ</div>
+        <h2>Çözülmüş (Geçmiş) Arıza ve Bakım Kayıtları Arşivi</h2>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Makine ID</th>
+                <th>Makine Adı</th>
+                <th>Açıklama</th>
+                <th>Yapay Zeka Kategorisi</th>
+                <th>Kapanış Tarihi</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model != null && Model.Any())
+            {
+                foreach (var item in Model)
+                {
+                    <tr>
+                        <td>#@item.MakineId</td>
+                        <td>@item.Makineler.Ad</td>
+                        <td>@item.KullaniciAciklamasi</td>
+                        <td>@item.NlpKategori</td>
+                        <td>@(item.KapanisTarihi.HasValue ? item.KapanisTarihi.Value.ToString("dd.MM.yyyy HH:mm") : "-")</td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="5" style="text-align:center;">Geçmiş arıza kaydı bulunmuyor.</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</body>
+</html>

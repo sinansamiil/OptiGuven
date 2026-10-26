@@ -1,0 +1,122 @@
+﻿@model IEnumerable<OptiGuven.Web.Models.IsgIhlalleri>
+@{
+    ViewBag.Title = "İSG Canlı Uyarı Merkezi";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container mt-4 mb-5">
+    <div class="d-flex justify-content-between align-items-center mb-4 mt-3">
+        <h2>👁️ İSG Yapay Zeka Uyarı Merkezi</h2>
+        <div class="d-flex align-items-center gap-2">
+            <!-- İSG için özelleştirilmiş PDF butonu -->
+            <label class="fw-bold"><input type="checkbox" id="selectAll" onclick="toggleSelectAll(this)"> Tümünü Seç</label>
+            <button type="button" class="btn btn-danger fw-bold shadow-sm" onclick="secilenleriIsgPdfAl()">
+                📄 Seçilenleri PDF İndir
+            </button>
+
+            <!-- GEÇMİŞ İHLAL KAYITLARI (ARŞİV) BUTONU -->
+            <a href="@Url.Action("GecmisIsgIhlalleri", "Makine")" class="btn btn-secondary fw-bold shadow-sm">
+                <i class="fa-solid fa-box-archive"></i> Geçmiş İhlal Kayıtları
+            </a>
+
+            <span class="badge bg-danger fs-6 shadow-sm">@Model.Count() Yeni İhlal</span>
+        </div>
+    </div>
+
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        @if (Model != null && Model.Any())
+        {
+            foreach (var ihlal in Model)
+            {
+                <div class="col">
+                    <div class="card h-100 shadow-sm border-danger">
+                        <input type="checkbox" class="ihlalSecim" value="@ihlal.Id" style="transform: scale(1.5);">
+                        <img src="@ihlal.FotografYolu" class="card-img-top" alt="İhlal Görseli" style="height: 250px; object-fit: cover;">
+
+                        <div class="card-body">
+                            <h5 class="card-title text-danger fw-bold">@ihlal.IhlalTipi</h5>
+                            <p class="card-text text-muted mb-1">
+                                <strong>Kamera ID:</strong> @ihlal.KameraId <br />
+                                <strong>Tarih:</strong> @(ihlal.Tarih.HasValue ? ihlal.Tarih.Value.ToString("dd.MM.yyyy HH:mm") : "-")
+                            </p>
+                            <div class="mb-3">
+                                <small class="text-muted">AI Güven Skoru: %@ihlal.GuvenSkoru</small>
+                                <div class="progress" style="height: 8px;">
+                                    <div class="progress-bar bg-warning" role="progressbar" style="width: @ihlal.GuvenSkoru%;" aria-valuenow="@ihlal.GuvenSkoru" aria-valuemin="0" aria-valuemax="100"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer bg-white border-top-0 d-flex justify-content-between">
+                            <!-- Detay Butonu -->
+                            <button type="button" class="btn btn-sm btn-outline-info shadow-sm" data-bs-toggle="modal" data-bs-target="#detayModal_@(ihlal.Id)">
+                                🔍 Detay
+                            </button>
+                            <a href="@Url.Action("IhlalKapat", new { id = ihlal.Id })" class="btn btn-sm btn-success fw-bold shadow-sm">✅ İncelendi Yap</a>
+                        </div>
+                    </div>
+
+                    <!-- İSG Detay Modalı (Her kart için döngü içinde özel ID ile oluşturulur) -->
+                    <div class="modal fade" id="detayModal_@(ihlal.Id)" tabindex="-1" aria-hidden="true">
+                        <div class="modal-dialog modal-lg modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-header bg-dark text-white">
+                                    <h5 class="modal-title">🚨 İhlal Detayı - Kamera ID: @ihlal.KameraId</h5>
+                                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Kapat"></button>
+                                </div>
+                                <div class="modal-body text-center">
+                                    <!-- Fotoğrafı Büyük Göster -->
+                                    <img src="@ihlal.FotografYolu" class="img-fluid rounded shadow-sm mb-3" style="max-height: 500px;" />
+
+                                    <h5 class="text-danger fw-bold">@ihlal.IhlalTipi</h5>
+                                    <div class="d-flex justify-content-center gap-4 mt-3">
+                                        <span class="badge bg-secondary fs-6"><i class="fa-regular fa-clock"></i> @(ihlal.Tarih.HasValue ? ihlal.Tarih.Value.ToString("dd.MM.yyyy HH:mm") : "-")</span>
+                                        <span class="badge bg-primary fs-6"><i class="fa-solid fa-robot"></i> AI Güven Skoru: %@ihlal.GuvenSkoru</span>
+                                    </div>
+                                </div>
+                                <div class="modal-footer d-flex justify-content-between">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kapat</button>
+                                    <a href="@Url.Action("IhlalKapat", new { id = ihlal.Id })" class="btn btn-success fw-bold">✅ İncelendi Olarak İşaretle</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Modal Sonu -->
+
+                </div>
+            }
+        }
+        else
+        {
+            <div class="col-12 text-center py-5">
+                <h4 class="text-success">🎉 Harika! Şu an için tespit edilen bir kural ihlali bulunmuyor.</h4>
+            </div>
+        }
+    </div>
+</div>
+
+<script>
+    function secilenleriIsgPdfAl() {
+        var secilenler = [];
+        $('.ihlalSecim:checked').each(function() {
+            secilenler.push($(this).val());
+        });
+
+        if(secilenler.length === 0) {
+            alert("Lütfen en az bir İSG ihlali seçin!");
+            return;
+        }
+
+        // Aktif Panel için:
+        window.location.href = '@Url.Action("SecilenAktifIsgPdf", "Makine")?idListesi=' + secilenler.join(',');
+    }
+</script>
+
+<script>
+    function toggleSelectAll(source) {
+        // Kartların içindeki tüm checkboxları bul
+        var checkboxes = document.querySelectorAll('.ihlalSecim');
+        checkboxes.forEach(function (checkbox) {
+            checkbox.checked = source.checked;
+        });
+    }
+</script>

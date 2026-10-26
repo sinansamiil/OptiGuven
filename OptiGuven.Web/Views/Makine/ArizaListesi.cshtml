@@ -1,0 +1,118 @@
+﻿@model IEnumerable<OptiGuven.Web.Models.ArizaBiletleri>
+@{
+    ViewBag.Title = "Aktif Arıza Kayıtları";
+    Layout = "~/Views/Shared/_Layout.cshtml"; // Ortak menü ve Bootstrap buradan geliyor
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4 mt-3">
+    <h2>🛠️ Aktif Arıza Kayıtları</h2>
+    <div>
+        <!-- GEÇMİŞ ARIZALAR (ARŞİV) BUTONU -->
+        <a href="@Url.Action("GecmisArizalar", "Makine")" class="btn btn-secondary fw-bold shadow-sm me-2">
+            <i class="fa-solid fa-box-archive"></i> Geçmiş Arızalar
+        </a>
+
+        <!-- Link yapısını sildik, yerine JavaScript fonksiyonunu tetikleyen bir buton koyduk -->
+        <button type="button" class="btn btn-danger fw-bold shadow-sm me-2" onclick="secilenleriPdfAl()">
+            📄 Seçilenleri PDF İndir
+        </button>
+
+        <a href="/Makine/Index" class="btn btn-outline-secondary fw-bold shadow-sm">Geri Dön</a>
+    </div>
+</div>
+
+@if (TempData["BasariMesaji"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show text-center fw-bold shadow-sm" role="alert">
+        ✅ @TempData["BasariMesaji"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Kapat"></button>
+    </div>
+}
+
+<div class="table-responsive">
+    <table class="table table-hover align-middle shadow-sm bg-white rounded">
+        <thead class="table-danger">
+            <tr>
+                <th><input type="checkbox" id="selectAll" onclick="toggleSelectAll(this)"></th>
+                <th>Makine ID</th>
+                <th>Açıklama</th>
+                <th>Kategori</th>
+                <th>Durum</th>
+                <th class="text-end">İşlem</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model != null && Model.Any())
+            {
+                foreach (var item in Model)
+                {
+                    <tr>
+                        <td><input type="checkbox" class="arizaSecim" value="@item.Id"></td>
+                        <td><strong>#@item.MakineId</strong></td>
+                        <td>@item.KullaniciAciklamasi</td>
+                        <td><span class="badge bg-secondary">@item.NlpKategori</span></td>
+
+                        <td>
+                            @if (item.Durum == "Çözüldü")
+                            {
+                                <span class="badge bg-secondary">Tamamlandı</span>
+                            }
+                            else
+                            {
+                                <span class="badge @(item.Durum == "Açık" ? "bg-danger" : "bg-warning text-dark")">@item.Durum</span>
+                            }
+                        </td>
+
+                        <td class="text-end text-nowrap">
+                            @if (!string.IsNullOrEmpty(item.GorselYolu))
+                            {
+                                <a href="@item.GorselYolu" target="_blank" class="btn btn-sm btn-outline-info me-2 shadow-sm">
+                                    📷 Görseli İncele
+                                </a>
+                            }
+                            else
+                            {
+                                <span class="text-muted small me-2">Görsel Yok</span>
+                            }
+
+                            @if (item.Durum != "Çözüldü")
+                            {
+                                <a href="@Url.Action("ArizaCozuldu", new { id = item.Id })" class="btn btn-sm btn-success fw-bold shadow-sm">
+                                    ✅ Çözüldü Yap
+                                </a>
+                            }
+                        </td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="5" class="text-center text-muted py-4">Sistemde henüz kayıtlı bir arıza bulunmamaktadır.</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<script>
+    function toggleSelectAll(source) {
+        checkboxes = document.getElementsByClassName('arizaSecim');
+        for (var i = 0; i < checkboxes.length; i++) checkboxes[i].checked = source.checked;
+    }
+
+    function secilenleriPdfAl() {
+        var secilenler = [];
+        $('.arizaSecim:checked').each(function () {
+            secilenler.push($(this).val());
+        });
+
+        if (secilenler.length === 0) {
+            alert("Lütfen en az bir arıza seçin!");
+            return;
+        }
+
+        // Seçilen ID'leri virgülle ayırıp Controller'a gönderiyoruz
+        window.location.href = '/Makine/SecilenleriPdfAl?idListesi=' + secilenler.join(',');
+    }
+</script>

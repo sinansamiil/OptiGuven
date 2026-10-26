@@ -1,0 +1,150 @@
+﻿<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - OptiGüven Kontrol Merkezi</title>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+    <style>
+        body {
+            background-color: #f8fafc; /* Çok hafif açık gri/mavi arka plan */
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        }
+
+        .navbar {
+            background-color: #0f172a !important; /* Kurumsal koyu lacivert */
+            border-bottom: 3px solid #2563eb; /* Alt kısma teknolojik mavi çizgi */
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            font-size: 1.4rem;
+        }
+
+        .nav-link {
+            font-size: 0.95rem;
+            font-weight: 500;
+            padding: 0.5rem 1rem !important;
+            transition: color 0.2s;
+        }
+
+            .nav-link i {
+                width: 20px;
+                text-align: center;
+                margin-right: 4px;
+            }
+
+            .nav-link:hover {
+                color: #60a5fa !important; /* Üzerine gelince açık mavi */
+            }
+
+        .main-content {
+            min-height: 80vh;
+            padding-top: 2rem;
+        }
+
+        /* Modern Footer */
+        footer {
+            background-color: #ffffff;
+            border-top: 1px solid #e2e8f0;
+            padding: 1.5rem 0;
+            margin-top: 3rem;
+            color: #64748b;
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-dark shadow-sm">
+        <div class="container-fluid px-4">
+            <a class="navbar-brand text-white" href="/Makine/ArizaBildir">
+                <i class="fa-solid fa-shield-halved text-primary me-2"></i>OptiGüven
+            </a>
+
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#anaMenu" aria-controls="anaMenu" aria-expanded="false" aria-label="Menüyü aç">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="anaMenu">
+
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0 mt-2 mt-lg-0">
+
+                    <li class="nav-item">
+                        <a class="nav-link text-warning fw-bold" href="/Makine/ArizaBildir">
+                            <i class="fa-solid fa-bolt"></i> Hızlı Bildirim
+                        </a>
+                    </li>
+
+                    @if (Session["Rol"] != null && Session["Rol"].ToString() == "Admin")
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link text-light" href="/Makine/Dashboard">
+                                <i class="fa-solid fa-chart-pie"></i> Dashboard
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-light" href="/Makine/Index">
+                                <i class="fa-solid fa-industry"></i> Makine Envanteri
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-light" href="/Makine/ArizaListesi">
+                                <i class="fa-solid fa-list-check"></i> Arıza Kayıtları
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-light" href="/Makine/IsgKontrolPaneli">
+                                <i class="fa-solid fa-triangle-exclamation"></i> İSG İzleme
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-light" href="/Makine/KullaniciYonetimi">
+                                <i class="fa-solid fa-users-gear"></i> Personel Yetkileri
+                            </a>
+                        </li>
+                    }
+                </ul>
+
+                <ul class="navbar-nav ms-auto">
+                    @if (Session["KullaniciAdi"] != null)
+                    {
+                        <li class="nav-item d-flex align-items-center me-3 mb-2 mb-lg-0">
+                            <span class="text-light" style="font-size: 0.9rem;">
+                                <i class="fa-regular fa-circle-user me-1 text-secondary"></i> Aktif Kullanıcı:
+                                <strong class="text-white ms-1">@Session["KullaniciAdi"]</strong>
+                            </span>
+                        </li>
+                        <li class="nav-item">
+                            <a class="btn btn-danger btn-sm px-3 fw-bold shadow-sm" href="/Account/Logout">
+                                <i class="fa-solid fa-power-off me-1"></i> Oturumu Kapat
+                            </a>
+                        </li>
+                    }
+                </ul>
+
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid px-4 main-content">
+        @RenderBody()
+    </div>
+
+    <footer class="text-center">
+        <div class="container">
+            <p class="mb-0 small fw-bold">
+                <i class="fa-solid fa-microchip me-1 text-primary"></i> OptiGüven Akıllı Fabrika Sistemleri &copy; @DateTime.Now.Year
+            </p>
+            <p class="small mt-1" style="font-size: 0.75rem;">Yapay Zeka Destekli Otonom İSG ve Bakım Altyapısı</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    @Scripts.Render("~/bundles/jquery")
+    @RenderSection("scripts", required: false)
+</body>
+</html>

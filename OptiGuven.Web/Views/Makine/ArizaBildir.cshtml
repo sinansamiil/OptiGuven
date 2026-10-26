@@ -1,0 +1,55 @@
+﻿@{
+    ViewBag.Title = "Sahadan Arıza Bildirimi";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="row justify-content-center mt-4 mb-5">
+    <div class="col-md-6 col-lg-5">
+        <div class="card shadow-lg border-0 rounded-lg">
+            <div class="card-header bg-danger text-white text-center py-3">
+                <h4 class="mb-0">🚨 Hızlı Arıza Bildirimi</h4>
+            </div>
+            <div class="card-body p-4">
+
+                @if (TempData["BasariMesaji"] != null)
+                {
+                    <div class="alert alert-success fw-bold text-center">
+                        @TempData["BasariMesaji"]
+                    </div>
+                }
+
+                @if (ViewBag.Hata != null)
+                {
+                    <div class="alert alert-danger fw-bold text-center">
+                        @ViewBag.Hata
+                    </div>
+                }
+
+                <form action="/Makine/ArizaBildir" method="post" enctype="multipart/form-data">
+                    @Html.AntiForgeryToken()
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">1. Sorunlu Makineyi Seçin</label>
+                        @Html.DropDownList("MakineId", (SelectList)ViewBag.Makineler, "Lütfen Makine Seçin", new { @class = "form-select", required = "required" })
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">2. Olayın Fotoğrafı (Zorunlu Değil)</label>
+                        <input type="file" name="YuklenenGorsel" class="form-control" accept="image/*" capture="environment" />
+                        <small class="text-muted">Kokuyu veya sesi tarif ediyorsanız fotoğraf yüklemeyebilirsiniz.</small>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">3. Gördüğünüz Problemi Açıklayın</label>
+                        <textarea name="KullaniciAciklamasi" class="form-control" rows="4" placeholder="Örn: Motordan yanık kokusu geliyor ve kıvılcım çıkıyor..." required></textarea>
+                    </div>
+
+                    <button type="submit" class="btn btn-danger w-100 py-2 fw-bold fs-5 shadow-sm">
+                        📨 Bildirimi Merkeze İlet
+                    </button>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>

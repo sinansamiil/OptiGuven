@@ -1,0 +1,45 @@
+## Visual Studio / .NET Framework Gitignore
+
+# User-specific files
+*.rsuser
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+.vs/
+.vscode/
+
+# Build results
+[Dd]ebug/
+[Dd]ebugPublic/
+[Rr]elease/
+[Rr]eleases/
+x64/
+x86/
+[Aa]rms/
+[Aa]rm64/
+bld/
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Ll]ogs/
+
+# NuGet Packages
+packages/
+*.nupkg
+*.snupkg
+
+# Entity Framework / SQL Server files
+*.mdf
+*.ldf
+*.ndf
+
+# Roslyn compiler binaries
+roslyn/
+
+# Temp and publish files
+*.tmp
+*.log
+*.Publish.xml
+*.pubxml
+*.azurePubxml

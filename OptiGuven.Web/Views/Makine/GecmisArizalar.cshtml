@@ -1,0 +1,79 @@
+﻿@model IEnumerable<OptiGuven.Web.Models.ArizaBiletleri>
+@{
+    ViewBag.Title = "Geçmiş Arıza Kayıtları Arşivi";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4 mt-3">
+        <h2><i class="fa-solid fa-box-archive text-secondary"></i> Geçmiş Arıza Kayıtları Arşivi</h2>
+        <div>
+            <!-- Mevcut PDF butonunu şu butonla değiştir -->
+            <button type="button" class="btn btn-danger shadow-sm fw-bold me-2" onclick="secilenleriPdfAl()">
+                📄 Seçilenleri PDF İndir
+            </button>
+            <a href="@Url.Action("ArizaListesi", "Makine")" class="btn btn-outline-primary shadow-sm fw-bold">
+                <i class="fa-solid fa-arrow-left"></i> Aktif Arızalara Dön
+            </a>
+        </div>
+    </div>
+
+    <div class="card shadow-sm border-0">
+        <div class="card-body p-0">
+            <table class="table table-hover mb-0 align-middle">
+                <thead class="table-dark">
+                    <tr>
+                        <th><input type="checkbox" id="selectAll" onclick="toggleSelectAll(this)"></th>
+                        <th>Makine</th>
+                        <th>Açıklama</th>
+                        <th>Kategori</th>
+                        <th>Kapanış Tarihi</th>
+                        <th>Durum</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model != null && Model.Any())
+                    {
+                        foreach (var item in Model)
+                        {
+                            <tr>
+                                <td><input type="checkbox" class="arizaSecim" value="@item.Id"></td>
+                                <td class="fw-bold">@item.Makineler.Ad</td>
+                                <td>@item.KullaniciAciklamasi</td>
+                                <td><span class="badge bg-secondary">@item.NlpKategori</span></td>
+                                <td>@(item.KapanisTarihi.HasValue ? item.KapanisTarihi.Value.ToString("dd.MM.yyyy HH:mm") : "-")</td>
+                                <td><span class="badge bg-success shadow-sm"><i class="fa-solid fa-check-double"></i> Çözüldü</span></td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr><td colspan="5" class="text-center py-4 text-muted">Henüz çözülmüş bir arıza kaydı bulunmuyor.</td></tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    function toggleSelectAll(source) {
+        var checkboxes = document.getElementsByClassName('arizaSecim');
+        for(var i = 0; i < checkboxes.length; i++) checkboxes[i].checked = source.checked;
+    }
+
+    function secilenleriPdfAl() {
+        var secilenler = [];
+        $('.arizaSecim:checked').each(function() {
+            secilenler.push($(this).val());
+        });
+
+        if(secilenler.length === 0) {
+            alert("Lütfen en az bir arıza seçin!");
+            return;
+        }
+
+        // Controller'daki yeni PDF metodumuza yönlendiriyoruz
+        window.location.href = '@Url.Action("GecmisSecilenArizalariPdf", "Makine")?idListesi=' + secilenler.join(',');
+    }
+</script>

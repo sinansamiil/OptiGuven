@@ -1,0 +1,143 @@
+﻿@model IEnumerable<OptiGuven.Web.Models.Kullanicilar>
+@{
+    ViewBag.Title = "Personel Yönetimi";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid mt-4 mb-5">
+    <div class="d-flex justify-content-between align-items-center mb-4 mt-3">
+        <h2><i class="fa-solid fa-users-gear text-secondary"></i> Fabrika Personel Listesi</h2>
+
+        <!-- YENİ PERSONEL EKLE BUTONU -->
+        <button type="button" class="btn btn-primary fw-bold shadow-sm" data-bs-toggle="modal" data-bs-target="#personelEkleModal">
+            <i class="fa-solid fa-user-plus"></i> Yeni Personel Ekle
+        </button>
+    </div>
+
+    <!-- Başarı Mesajı Gösterimi -->
+    @if (TempData["BasariMesaji"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show shadow-sm" role="alert">
+            <i class="fa-solid fa-check-circle"></i> @TempData["BasariMesaji"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Kapat"></button>
+        </div>
+    }
+
+    <div class="card shadow-sm border-0">
+        <div class="card-body p-0">
+            <table class="table table-hover mb-0 align-middle">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Ad Soyad</th>
+                        <th>E-Posta</th>
+                        <th>Mevcut Yetki</th>
+                        <th class="text-end pe-4">İşlemler</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var user in Model)
+                    {
+                        <tr>
+                            <td class="fw-bold">@user.AdSoyad</td>
+                            <td>@user.Email</td>
+                            <td>
+                                <span class="badge @(user.Rol == "Admin" || user.Rol == "Yönetici" ? "bg-danger" : "bg-secondary")">
+                                    @user.Rol
+                                </span>
+                            </td>
+                            <td class="text-end pe-4">
+                                <div class="d-inline-flex gap-2">
+                                    <!-- DÜZENLE BUTONU -->
+                                    <button type="button" class="btn btn-sm btn-outline-info fw-bold" data-bs-toggle="modal" data-bs-target="#duzenleModal_@user.Id">
+                                        ✏️ Düzenle
+                                    </button>
+
+                                    <!-- SİL BUTONU -->
+                                    <a href="@Url.Action("PersonelSil", "Makine", new { id = user.Id })" class="btn btn-sm btn-outline-danger fw-bold" onclick="return confirm('@user.AdSoyad adlı personeli silmek istediğinize emin misiniz?');">
+                                        🗑️ Sil
+                                    </a>
+                                </div>
+
+                                <!-- DÜZENLE MODALI (Her Kullanıcı İçin) -->
+                                <div class="modal fade text-start" id="duzenleModal_@user.Id" tabindex="-1" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered">
+                                        <div class="modal-content">
+                                            <form action="@Url.Action("PersonelDuzenle", "Makine")" method="post">
+                                                <div class="modal-header bg-info text-white">
+                                                    <h5 class="modal-title">Personel Bilgilerini Düzenle</h5>
+                                                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <input type="hidden" name="Id" value="@user.Id" />
+                                                    <div class="mb-3">
+                                                        <label class="form-label fw-bold">Ad Soyad</label>
+                                                        <input type="text" class="form-control" name="AdSoyad" value="@user.AdSoyad" required>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label class="form-label fw-bold">E-Posta</label>
+                                                        <input type="email" class="form-control" name="EPosta" value="@user.Email" required>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label class="form-label fw-bold">Sistem Yetkisi</label>
+                                                        <select class="form-select" name="Rol">
+                                                            <option value="Admin" @(user.Rol == "Admin" ? "selected" : "")>Yönetici (Admin)</option>
+                                                            <option value="Çalışan" @(user.Rol == "Çalışan" ? "selected" : "")>Standart Çalışan</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer d-flex justify-content-between">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+                                                    <button type="submit" class="btn btn-info text-white fw-bold">Değişiklikleri Kaydet</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Modal Sonu -->
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- YENİ PERSONEL EKLE MODALI -->
+<div class="modal fade" id="personelEkleModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <form action="@Url.Action("PersonelEkle", "Makine")" method="post">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title"><i class="fa-solid fa-user-plus"></i> Sisteme Yeni Personel Ekle</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Ad Soyad</label>
+                        <input type="text" class="form-control" name="AdSoyad" placeholder="Örn: Ahmet Yılmaz" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">E-Posta Adresi</label>
+                        <input type="email" class="form-control" name="EPosta" placeholder="ornek@fabrika.com" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Geçici Şifre</label>
+                        <input type="password" class="form-control" name="Sifre" placeholder="Sisteme giriş şifresi" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Sistem Yetkisi</label>
+                        <select class="form-select" name="Rol">
+                            <option value="Çalışan">Standart Çalışan</option>
+                            <option value="Admin">Yönetici (Admin)</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer d-flex justify-content-between">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+                    <button type="submit" class="btn btn-primary fw-bold">Personeli Kaydet</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

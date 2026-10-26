@@ -1,0 +1,250 @@
+@{
+    ViewBag.Title = "Akıllı Fabrika Dashboard";
+    Layout = "~/Views/Shared/_Layout.cshtml"; // Ortak menüyü ve Bootstrap'i buradan çeker
+}
+
+<style>
+    .dashboard-container {
+        background: white;
+        padding: 30px;
+        border-radius: 15px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        margin-top: 20px;
+        margin-bottom: 30px;
+    }
+
+    .kamera-box {
+        background: #1e293b;
+        border-radius: 10px;
+        min-height: 250px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        overflow: hidden;
+    }
+</style>
+
+<div class="container-fluid dashboard-container">
+
+    <div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-3">
+        <h3 class="fw-bold text-dark m-0"><i class="fa-solid fa-chart-pie text-primary me-2"></i> Akıllı Fabrika İzleme Merkezi</h3>
+        <span class="badge bg-success p-2 fs-6 shadow-sm"><i class="fa-solid fa-robot me-1"></i> ML Engine Aktif</span>
+    </div>
+
+    <div id="alertBox" class="alert alert-danger text-center fw-bold mb-4 shadow-sm" style="display:none;">
+        <i class="fa-solid fa-triangle-exclamation me-2"></i> DİKKAT: ANOMALİ TESPİT EDİLDİ! Lütfen makineyi kontrol edin.
+    </div>
+
+    <h6 class="text-muted fw-bold mb-3"><i class="fa-solid fa-microchip me-1"></i> Makine Öğrenmesi Anlık Analiz (Örnek CNC-01)</h6>
+    <div class="row mb-4">
+
+        <div class="col-md-4 mb-3">
+            <div class="card border-0 shadow-sm h-100 py-2" style="border-left: 4px solid #f59e0b !important;">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs fw-bold text-warning text-uppercase mb-1">Anlık Sıcaklık & Titreşim</div>
+                            <div class="h5 mb-0 fw-bold text-dark">@ViewBag.Sicaklik °C / @ViewBag.Titresim mm/s</div>
+                        </div>
+                        <div class="col-auto ms-2">
+                            <i class="fa-solid fa-temperature-high fa-2x text-muted opacity-50"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-3">
+            <div class="card border-0 shadow-sm h-100 py-2" style="border-left: 4px solid #ef4444 !important;">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs fw-bold text-danger text-uppercase mb-1">Yapay Zeka Arıza Riski</div>
+                            <div class="row no-gutters align-items-center">
+                                <div class="col-auto">
+                                    <div class="h5 mb-0 me-3 fw-bold text-dark">%@ViewBag.ArizaRiski</div>
+                                </div>
+                                <div class="col">
+                                    <div class="progress progress-sm" style="height: 8px;">
+                                        <div class="progress-bar bg-danger" role="progressbar" style="width: @(ViewBag.ArizaRiski)%;" aria-valuenow="@(ViewBag.ArizaRiski)" aria-valuemin="0" aria-valuemax="100"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-auto ms-2">
+                            <i class="fa-solid fa-triangle-exclamation fa-2x text-muted opacity-50"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-3">
+            <div class="card border-0 shadow-sm h-100 py-2" style="border-left: 4px solid #3b82f6 !important;">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs fw-bold text-primary text-uppercase mb-1">Tahmini Kalan Ömür (RUL)</div>
+                            <div class="h5 mb-0 fw-bold text-dark">@ViewBag.KalanOmur</div>
+                        </div>
+                        <div class="col-auto ms-2">
+                            <i class="fa-solid fa-hourglass-half fa-2x text-muted opacity-50"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-4 mb-4">
+            <div class="card p-3 shadow-sm h-100 border-0">
+                <h6 class="text-center fw-bold mb-3"><i class="fa-solid fa-video text-danger me-1"></i> Kritik An Görüntüleme</h6>
+                <div id="kameraAlani" class="kamera-box shadow-sm w-100">
+                    <span class="text-muted"><i class="fa-solid fa-spinner fa-spin me-2"></i>Bekleniyor...</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-8 mb-4">
+            <div class="card p-3 shadow-sm h-100 border-0">
+                <h6 class="text-center fw-bold mb-3"><i class="fa-solid fa-satellite-dish text-success me-1"></i> Canlı Sensör Akışı</h6>
+                <div style="height: 250px;">
+                    <canvas id="sensorChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-2">
+        <div class="col-md-6 mb-4">
+            <div class="card p-3 shadow-sm h-100 border-0">
+                <h6 class="text-center fw-bold text-dark mb-3"><i class="fa-solid fa-brain text-info me-1"></i> NLP Arıza Sınıflandırması</h6>
+                <div style="height: 250px; display: flex; justify-content: center;">
+                    <canvas id="kategoriGrafik"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 mb-4">
+            <div class="card p-4 shadow-sm h-100 bg-light border-0 d-flex justify-content-center">
+                <div class="text-center">
+                    <h5 class="fw-bold text-primary mb-3">OptiGüven Sistem Özeti</h5>
+                    <p class="text-muted small">
+                        Üstteki canlı grafik, fabrikadaki makine sensörlerini <strong>2 saniyede bir</strong> güncelleyerek dinler.
+                        Bir anomali oluştuğunda sol taraftaki panelde olay anının fotoğrafı (YOLOv8) belirir.
+                    </p>
+                    <p class="text-muted small mb-0">
+                        Yandaki pasta grafiği ise işçilerin bildirdiği arızaları analiz eden <strong>NLP (Doğal Dil İşleme)</strong> motorumuzun anlık sonuçlarını gösterir.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // ==========================================
+        // 1. CANLI SENSÖR GRAFİĞİ (ÇİZGİ GRAFİK)
+        // ==========================================
+        var ctxSensor = document.getElementById('sensorChart').getContext('2d');
+        var sensorChart = new Chart(ctxSensor, {
+            type: 'line',
+            data: {
+                labels: [],
+                datasets: [
+                    { label: 'Sıcaklık (°C)', data: [], borderColor: '#28a745', backgroundColor: 'rgba(40, 167, 69, 0.1)', borderWidth: 3, tension: 0.4, fill: true },
+                    { label: 'Titreşim', data: [], borderColor: '#007bff', backgroundColor: 'rgba(0, 123, 255, 0.1)', borderWidth: 3, tension: 0.4, fill: true }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: { y: { beginAtZero: true, max: 120 } },
+                plugins: { legend: { position: 'top' } }
+            }
+        });
+
+        function veriGuncelle() {
+            fetch('/Makine/GetSensorChartData?t=' + new Date().getTime())
+                .then(response => {
+                    if (!response.ok) throw new Error("Sunucu yanıt vermedi");
+                    return response.json();
+                })
+                .then(data => {
+                    if (data && data.length > 0) {
+                        sensorChart.data.labels = data.map(item => item.Tarih);
+                        sensorChart.data.datasets[0].data = data.map(item => item.Sicaklik);
+                        sensorChart.data.datasets[1].data = data.map(item => item.Titresim);
+                        sensorChart.update();
+
+                        var sonVeri = data[data.length - 1];
+                        var alertBox = document.getElementById('alertBox');
+
+                        if (sonVeri.IsAnomali) {
+                            alertBox.style.display = 'block';
+                            fetch('/Makine/KameraSnapshotAl')
+                                .then(res => res.json())
+                                .then(d => {
+                                    if (d.basarili) {
+                                        document.getElementById('kameraAlani').innerHTML =
+                                            `<img src="${d.yol}" class="img-fluid shadow" style="border-radius:10px; max-height:250px;">`;
+                                    }
+                                }).catch(e => console.log("Kamera anlık görüntü hatası:", e));
+                        } else {
+                            alertBox.style.display = 'none';
+                            // Anomali geçince ekranı tekrar bekleme moduna alabilirsin (opsiyonel)
+                        }
+                    }
+                })
+                .catch(error => {
+                    console.error("Sensör döngü hatası (Döngü devam edecek):", error);
+                });
+        }
+
+        veriGuncelle();
+        setInterval(veriGuncelle, 2000);
+
+        // ==========================================
+        // 2. YAPAY ZEKA KATEGORİ GRAFİĞİ (PASTA GRAFİK)
+        // ==========================================
+        document.addEventListener("DOMContentLoaded", function () {
+            fetch('/Makine/GetKategoriDagilimi')
+                .then(response => response.json())
+                .then(data => {
+                    const etiketler = data.map(item => item.Kategori);
+                    const degerler = data.map(item => item.Adet);
+
+                    const ctxKategori = document.getElementById('kategoriGrafik').getContext('2d');
+                    new Chart(ctxKategori, {
+                        type: 'doughnut',
+                        data: {
+                            labels: etiketler,
+                            datasets: [{
+                                data: degerler,
+                                backgroundColor: [
+                                    '#dc3545', // Kırmızı (Örn: İSG)
+                                    '#ffc107', // Sarı (Örn: Elektrik)
+                                    '#6c757d', // Gri (Örn: Mekanik)
+                                    '#17a2b8'  // Turkuaz (Genel)
+                                ],
+                                borderWidth: 2,
+                                hoverOffset: 5
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                legend: { position: 'right' }
+                            }
+                        }
+                    });
+                })
+                .catch(error => console.error("Kategori verisi alınamadı:", error));
+        });
+    </script>
+}

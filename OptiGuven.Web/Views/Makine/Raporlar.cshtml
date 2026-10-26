@@ -1,0 +1,69 @@
+﻿@model IEnumerable<OptiGuven.Web.Models.SensorLoglari>
+
+@{
+    ViewBag.Title = "Geçmiş Sensör Raporları";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="card shadow-sm p-4 mt-3 mb-5">
+    <h3 class="mb-4 text-center">📊 Geçmiş Veri ve Anomali Raporları</h3>
+
+    <form method="get" action="/Makine/Raporlar" class="row g-3 mb-4 bg-light p-3 rounded border">
+        <div class="col-md-4">
+            <label class="form-label fw-bold">Başlangıç Tarihi</label>
+            <input type="date" name="baslangicTarihi" class="form-control" value="@ViewBag.Baslangic" />
+        </div>
+        <div class="col-md-4">
+            <label class="form-label fw-bold">Bitiş Tarihi</label>
+            <input type="date" name="bitisTarihi" class="form-control" value="@ViewBag.Bitis" />
+        </div>
+        <div class="col-md-4 d-flex align-items-end">
+            <button type="submit" class="btn btn-primary w-100 fw-bold">🔍 Verileri Filtrele</button>
+        </div>
+    </form>
+
+    <div class="table-responsive">
+        <table class="table table-striped table-hover align-middle">
+            <thead class="table-dark">
+                <tr>
+                    <th>Kayıt Tarihi</th>
+                    <th>Sıcaklık (°C)</th>
+                    <th>Titreşim</th>
+                    <th>Durum</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model != null && Model.Any())
+                {
+                    foreach (var item in Model)
+                    {
+                        // Anomali durumunu tabloya yazdırırken kontrol edelim
+                        bool anomaliMi = (item.Sicaklik > 90 || item.Titresim > 80);
+
+                        <tr class="@(anomaliMi ? "table-danger" : "")">
+                            <td><strong>@(item.OlusturulmaTarihi.HasValue ? item.OlusturulmaTarihi.Value.ToString("dd.MM.yyyy HH:mm:ss") : "-")</strong></td>
+                            <td>@item.Sicaklik</td>
+                            <td>@item.Titresim</td>
+                            <td>
+                                @if (anomaliMi)
+                                {
+                                    <span class="badge bg-danger">Kritik Anomali</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-success">Normal</span>
+                                }
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="4" class="text-center text-muted py-4">Bu tarih aralığında herhangi bir kayıt bulunamadı.</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

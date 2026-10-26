@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="7d091267f0e94b4786868fc88b1577cd" Name="Diagram1" ZoomLevel="73">
+        <EntityTypeShape EntityType="AkilliFabrikaDBModel.ArizaBiletleri" Width="1.5" PointX="5.25" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="AkilliFabrikaDBModel.Departmanlar" Width="1.5" PointX="0.75" PointY="3.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="AkilliFabrikaDBModel.IsgIhlalleri" Width="1.5" PointX="10" PointY="1" IsExpanded="true" />
+        <EntityTypeShape EntityType="AkilliFabrikaDBModel.KameraNoktalari" Width="1.5" PointX="7.75" PointY="1.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="AkilliFabrikaDBModel.Kullanicilar" Width="1.5" PointX="3" PointY="1.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="AkilliFabrikaDBModel.Makineler" Width="1.5" PointX="3" PointY="5" IsExpanded="true" />
+        <EntityTypeShape EntityType="AkilliFabrikaDBModel.SensorLoglari" Width="1.5" PointX="5.25" PointY="5" IsExpanded="true" />
+        <AssociationConnector Association="AkilliFabrikaDBModel.FK__ArizaBile__Bildi__59FA5E80" ManuallyRouted="false" />
+        <AssociationConnector Association="AkilliFabrikaDBModel.FK__ArizaBile__Makin__59063A47" ManuallyRouted="false" />
+        <AssociationConnector Association="AkilliFabrikaDBModel.FK__Kullanici__Depar__4D94879B" ManuallyRouted="false" />
+        <AssociationConnector Association="AkilliFabrikaDBModel.FK__Makineler__Depar__5165187F" ManuallyRouted="false" />
+        <AssociationConnector Association="AkilliFabrikaDBModel.FK__IsgIhlall__Kamer__60A75C0F" ManuallyRouted="false" />
+        <AssociationConnector Association="AkilliFabrikaDBModel.FK__SensorLog__Makin__5535A963" ManuallyRouted="false" />
+        <EntityTypeShape EntityType="AkilliFabrikaDBModel.ArizaGorselleri" Width="1.5" PointX="7.5" PointY="4.625" />
+        <AssociationConnector Association="AkilliFabrikaDBModel.FK__ArizaGors__Ariza__66603565" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

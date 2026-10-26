@@ -1,0 +1,75 @@
+﻿@{
+    ViewBag.Title = "OptiGüven - Kayıt Ol";
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="utf-8" />
+    <title>@ViewBag.Title</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <style>
+        body {
+            background: linear-gradient(135deg, #1f4068 0%, #162447 100%);
+            height: 100vh;
+            display: flex;
+            align-items: center;
+        }
+
+        .login-card {
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-5">
+                <div class="card login-card bg-light p-4">
+                    <div class="text-center mb-4">
+                        <h3 class="fw-bold text-dark">Yeni Hesap Oluştur</h3>
+                        <p class="text-muted small">Sisteme katılmak için bilgilerinizi girin.</p>
+                    </div>
+
+                    @if (ViewBag.Hata != null)
+                    {
+                        <div class="alert alert-danger py-2 text-center fw-bold">@ViewBag.Hata</div>
+                    }
+
+                <form action="/Account/Register" method="post">
+                    @Html.AntiForgeryToken()
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold text-secondary">Ad Soyad</label>
+                        <input type="text" class="form-control" name="adSoyad" required placeholder="Örn: Ahmet Yılmaz" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold text-secondary">E-Posta Adresi</label>
+                        <input type="email" class="form-control" name="email" required placeholder="fabrika@sirket.com" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold text-danger">Kurum Kayıt Kodu</label>
+                        <input type="text" class="form-control border-danger" name="kurumKodu" required placeholder="İK Departmanından aldığınız kodu girin" />
+                        <small class="text-muted" style="font-size: 0.75em;">Sisteme dışarıdan kayıt kabul edilmemektedir.</small>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label fw-bold text-secondary">Şifre Belirleyin</label>
+                        <input type="password" class="form-control" name="sifre" required placeholder="••••••••" />
+                    </div>
+
+                    <button type="submit" class="btn btn-success w-100 fw-bold">Kayıt İşlemini Tamamla</button>
+                </form>
+
+                    <div class="text-center mt-3">
+                        <a href="/Account/Login" class="text-decoration-none fw-bold text-primary">Zaten hesabım var, Giriş Yap</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
